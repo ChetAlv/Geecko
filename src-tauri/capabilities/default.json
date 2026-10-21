@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permisos mínimos para la ventana principal de Geecko Maintenance",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

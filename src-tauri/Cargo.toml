@@ -1,0 +1,26 @@
+[package]
+name = "geecko-maintenance"
+version = "0.1.0"
+description = "Gestión local de órdenes de mantenimiento para Geecko"
+authors = ["Geecko"]
+edition = "2021"
+
+[lib]
+name = "geecko_maintenance_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+argon2 = "0.5"
+rand_core = { version = "0.6", features = ["getrandom"] }
+qrcode = { version = "0.14", default-features = false, features = ["svg"] }
+geecko-sync-protocol = { path = "../sync-protocol" }
+uuid = { version = "1", features = ["v4"] }
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }

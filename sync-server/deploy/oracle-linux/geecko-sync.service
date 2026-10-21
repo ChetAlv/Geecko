@@ -1,0 +1,44 @@
+[Unit]
+Description=Geecko Sync API
+Documentation=file:///usr/local/share/doc/geecko-sync/README-oracle-linux.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=geecko-sync
+Group=geecko-sync
+EnvironmentFile=/etc/geecko-sync/geecko-sync.env
+ExecStart=/usr/local/libexec/geecko-sync/geecko-sync-server
+WorkingDirectory=/var/lib/geecko-sync
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+UMask=0077
+
+# Endurecimiento compatible con Oracle Linux 8/9.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+StateDirectory=geecko-sync
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=geecko-sync
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Permisos mínimos para la ventana principal de Geecko Maintenance","local":true,"windows":["main"],"permissions":["core:default"]},"mobile":{"identifier":"mobile","description":"Permisos mínimos para Geecko en Android","local":true,"windows":["main"],"permissions":["core:default"],"platforms":["android"]}}

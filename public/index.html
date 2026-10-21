@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#09100d">
+    <title>Geecko Servicio Técnico</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="auth-screen" id="auth-screen">
+      <section class="auth-card">
+        <div class="auth-brand">
+          <img src="/logo-geecko.png" alt="Geecko">
+          <span>Control local del taller</span>
+        </div>
+        <div id="login-panel" hidden>
+          <span class="eyebrow">ACCESO LOCAL</span>
+          <h1>Iniciar sesi&oacute;n</h1>
+          <p>Usa tu cuenta del taller. La verificaci&oacute;n se realiza en este equipo.</p>
+          <form id="login-form" class="auth-form" novalidate>
+            <label class="field"><span>Usuario</span><input name="username" autocomplete="username" required></label>
+            <label class="field"><span>Contrase&ntilde;a</span><input name="password" type="password" autocomplete="current-password" required></label>
+            <p class="auth-error" id="login-error" role="alert"></p>
+            <button class="primary-button" type="submit">Entrar a Geecko</button>
+          </form>
+        </div>
+        <div id="setup-panel" hidden>
+          <span class="eyebrow">PRIMER INICIO</span>
+          <h1>Crear administrador</h1>
+          <p>Esta cuenta podr&aacute; gestionar usuarios, respaldos y todas las operaciones.</p>
+          <form id="setup-form" class="auth-form" novalidate>
+            <label class="field"><span>Nombre completo</span><input name="displayName" maxlength="100" required></label>
+            <label class="field"><span>Usuario</span><input name="username" maxlength="40" autocomplete="username" required></label>
+            <label class="field"><span>Contrase&ntilde;a</span><input name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><small>M&iacute;nimo 8 caracteres.</small></label>
+            <p class="auth-error" id="setup-error" role="alert"></p>
+            <button class="primary-button" type="submit">Crear cuenta y continuar</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <div class="app-shell" hidden>
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">G</div>
+          <div>
+            <strong>Geecko</strong>
+            <span>Servicio técnico</span>
+          </div>
+        </div>
+
+        <nav class="main-nav" aria-label="Navegación principal">
+          <p class="nav-label">OPERACIÓN</p>
+          <button class="nav-item is-active" data-view="dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
+            <span>Resumen</span>
+          </button>
+          <button class="nav-item" data-view="statistics">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16v2H2V3h2v16Zm3-2H5v-6h2v6Zm4 0H9V7h2v10Zm4 0h-2V9h2v8Zm4 0h-2V4h2v13Z"/></svg>
+            <span>Estad&iacute;sticas</span>
+          </button>
+          <button class="nav-item" data-view="orders">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v2h3a1 1 0 0 1 1 1v15H3V6a1 1 0 0 1 1-1h3V3Zm2 2h6V4H9v1Zm-4 2v12h14V7h-2v2H7V7H5Zm3 5h8v2H8v-2Zm0 4h5v2H8v-2Z"/></svg>
+            <span>Órdenes</span>
+            <span class="nav-count" id="nav-order-count">0</span>
+          </button>
+          <button class="nav-item" data-view="customers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0H5Zm14-9a3 3 0 1 0 0-6v6Zm1.5 2.2a5.5 5.5 0 0 1 3.5 5.1V20h-3a9 9 0 0 0-2.4-6.2c.6-.3 1.2-.5 1.9-.6Z"/></svg>
+            <span>Clientes</span>
+          </button>
+          <button class="nav-item" data-view="assets">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3a7 7 0 0 0-8.9 8.9l-5.5 5.5a2.1 2.1 0 0 0 3 3l5.5-5.5a7 7 0 0 0 8.9-8.9l-4.1 4.1-3-3 1.1-1.1ZM5.6 19.4a.8.8 0 1 1-1.1-1.1.8.8 0 0 1 1.1 1.1Z"/></svg>
+            <span>Equipos</span>
+          </button>
+          <button class="nav-item" data-view="inventory">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v5H4V4Zm2 2v1h12V6H6Zm-2 5h16v9H4v-9Zm2 2v5h12v-5H6Zm3 1h6v2H9v-2Z"/></svg>
+            <span>Inventario</span>
+          </button>
+          <button class="nav-item" data-view="sales">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h2l1.2 3H21l-2 8H8L5.5 6H4V4Zm4 5 .9 4h8.5l1-4H8Zm1 8a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm8 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/></svg>
+            <span>Ventas</span>
+          </button>
+          <button class="nav-item" data-view="backups">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C7.6 3 4 4.3 4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6c0-1.7-3.6-3-8-3Zm0 2c3.3 0 5.3.7 5.9 1-.6.3-2.6 1-5.9 1s-5.3-.7-5.9-1c.6-.3 2.6-1 5.9-1Zm0 14c-3.7 0-5.7-.9-6-1.2v-2.5c1.5.7 3.7 1 6 1s4.5-.3 6-1v2.5c-.3.3-2.3 1.2-6 1Zm0-4.7c-3.7 0-5.7-.9-6-1.2v-2.5c1.5.7 3.7 1 6 1s4.5-.3 6-1v2.5c-.3.3-2.3 1.2-6 1Zm0-4.7c-3.7 0-5.7-.9-6-1.2V8c1.5.7 3.7 1 6 1s4.5-.3 6-1v.4c-.3.3-2.3 1.2-6 1.2Z"/></svg>
+            <span>Respaldos</span>
+          </button>
+          <button class="nav-item" data-view="users" data-admin-only>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 8a8 8 0 0 1 16 0H4Zm15-8v-2h2V8h2v2h2v2h-2v2h-2v-2h-2Z"/></svg>
+            <span>Usuarios</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-tip">
+          <span class="tip-icon">✓</span>
+          <strong>Datos protegidos</strong>
+          <p>SQLite local con réplica segura en PostgreSQL.</p>
+        </div>
+
+        <button class="local-status" id="sidebar-sync-status" type="button" data-action="sync-now" title="Sincronizar ahora">
+          <span class="status-dot"></span>
+          <div>
+            <strong id="sidebar-sync-title">Modo local</strong>
+            <small id="sidebar-sync-copy">Sin configurar</small>
+          </div>
+        </button>
+      </aside>
+
+      <div class="main-area">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="menu-button" aria-label="Abrir menú">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v2H3V6Zm0 5h18v2H3v-2Zm0 5h18v2H3v-2Z"/></svg>
+          </button>
+          <div class="page-heading">
+            <h1 id="page-title">Resumen operativo</h1>
+            <p id="page-subtitle">Control de diagnósticos y reparaciones</p>
+          </div>
+          <div class="top-actions">
+            <div class="date-chip" id="today-label"></div>
+            <button class="session-chip" type="button" data-action="logout" title="Cerrar sesi&oacute;n">
+              <span class="session-avatar" id="session-avatar">G</span>
+              <span><strong id="session-user-name">Usuario</strong><small id="session-user-role">Rol</small></span>
+            </button>
+            <button class="primary-button" data-action="new-order">
+              <span aria-hidden="true">＋</span> Nueva orden
+            </button>
+          </div>
+        </header>
+
+        <main class="content">
+          <section class="mobile-runtime-card" id="mobile-runtime-card" aria-label="Estado de la aplicación móvil">
+            <div class="mobile-runtime-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 3v14h10V5H7Zm4 15h2v1h-2v-1Z"/></svg>
+            </div>
+            <div>
+              <strong>Geecko móvil</strong>
+              <span id="mobile-runtime-copy">Datos protegidos en este dispositivo</span>
+            </div>
+            <button class="mobile-local-badge" id="mobile-sync-badge" type="button" data-action="sync-now"><i></i> Local</button>
+          </section>
+
+          <section class="view is-active" id="dashboard-view" data-view-panel="dashboard">
+            <div class="metric-grid" id="metric-grid" aria-label="Indicadores principales">
+              <article class="metric-card metric-green skeleton-card"></article>
+              <article class="metric-card skeleton-card"></article>
+              <article class="metric-card skeleton-card"></article>
+              <article class="metric-card skeleton-card"></article>
+            </div>
+
+            <div class="dashboard-grid">
+              <section class="panel orders-panel">
+                <div class="panel-header">
+                  <div>
+                    <span class="eyebrow">SERVICIOS EN CURSO</span>
+                    <h2>Órdenes activas</h2>
+                  </div>
+                  <button class="text-button" data-view="orders">Ver todas <span>→</span></button>
+                </div>
+                <div class="table-wrap">
+                  <table class="data-table compact-table">
+                    <thead>
+                      <tr>
+                        <th>Orden</th>
+                        <th>Trabajo</th>
+                        <th>Prioridad</th>
+                        <th>Programada</th>
+                        <th>Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashboard-orders"></tbody>
+                  </table>
+                </div>
+                <div class="mobile-record-list" id="mobile-dashboard-orders"></div>
+                <div class="empty-state" id="dashboard-empty" hidden>
+                  <div class="empty-icon">✓</div>
+                  <h3>No hay órdenes activas</h3>
+                  <p>Registra el primer equipo recibido para iniciar su diagnóstico.</p>
+                  <button class="secondary-button" data-action="new-order">Crear orden</button>
+                </div>
+              </section>
+
+              <aside class="panel workload-panel">
+                <div class="panel-header">
+                  <div>
+                    <span class="eyebrow">DISTRIBUCIÓN</span>
+                    <h2>Carga actual</h2>
+                  </div>
+                </div>
+                <div class="workload-hero">
+                  <div class="workload-number" id="workload-total">0</div>
+                  <div>
+                    <strong>órdenes abiertas</strong>
+                    <span id="workload-caption">Todo bajo control</span>
+                  </div>
+                </div>
+                <div class="status-breakdown" id="status-breakdown"></div>
+                <div class="attention-box">
+                  <span class="attention-icon">!</span>
+                  <div>
+                    <strong id="attention-title">Sin atrasos</strong>
+                    <p id="attention-copy">La planificación está al día.</p>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="view" id="orders-view" data-view-panel="orders">
+            <div class="section-toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 19.6-4.8-4.8a7.5 7.5 0 1 0-1.4 1.4l4.8 4.8 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z"/></svg>
+                <input id="order-search" type="search" placeholder="Buscar por orden, cliente, equipo o accesorio..." autocomplete="off">
+              </div>
+              <div class="filter-group">
+                <label>
+                  <span class="sr-only">Filtrar por estado</span>
+                  <select id="status-filter">
+                    <option value="todos">Todos los estados</option>
+                    <option value="solicitada">Recibida</option>
+                    <option value="planificada">En diagnóstico</option>
+                    <option value="pendiente_autorizacion">Pendiente de autorización</option>
+                    <option value="en_progreso">En reparación</option>
+                    <option value="en_espera">En espera</option>
+                    <option value="completada">Lista para entregar</option>
+                    <option value="entregada">Entregada</option>
+                    <option value="cancelada">Cancelada</option>
+                  </select>
+                </label>
+                <label>
+                  <span class="sr-only">Filtrar por prioridad</span>
+                  <select id="priority-filter">
+                    <option value="todas">Todas las prioridades</option>
+                    <option value="critica">Crítica</option>
+                    <option value="alta">Alta</option>
+                    <option value="media">Media</option>
+                    <option value="baja">Baja</option>
+                  </select>
+                </label>
+                <button class="secondary-button export-button" type="button" data-view="backups">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10l3.5-3.5 1.4 1.4-5.9 5.9-5.9-5.9 1.4-1.4L11 13V3ZM4 18h16v3H4v-3Z"/></svg>
+                  Respaldos
+                </button>
+              </div>
+            </div>
+
+            <section class="panel full-panel">
+              <div class="panel-header order-list-header">
+                <div>
+                  <span class="eyebrow">CONTROL DE TRABAJO</span>
+                  <h2>Órdenes de servicio técnico</h2>
+                </div>
+                <span class="result-count" id="order-result-count">0 órdenes</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Orden</th>
+                      <th>Trabajo / equipo</th>
+                      <th>Tipo</th>
+                      <th>Prioridad</th>
+                      <th>Programada</th>
+                      <th>Responsable</th>
+                      <th>Estado</th>
+                      <th><span class="sr-only">Abrir</span></th>
+                    </tr>
+                  </thead>
+                  <tbody id="orders-table-body"></tbody>
+                </table>
+              </div>
+              <div class="mobile-record-list" id="mobile-orders-list"></div>
+              <div class="empty-state" id="orders-empty" hidden>
+                <div class="empty-icon">⌕</div>
+                <h3>No encontramos órdenes</h3>
+                <p>Ajusta los filtros o registra una nueva orden.</p>
+                <button class="secondary-button" data-action="new-order">Nueva orden</button>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="customers-view" data-view-panel="customers">
+            <div class="section-toolbar customers-toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 19.6-4.8-4.8a7.5 7.5 0 1 0-1.4 1.4l4.8 4.8 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z"/></svg>
+                <input id="customer-search" type="search" placeholder="Buscar cliente, teléfono, empresa o correo..." autocomplete="off">
+              </div>
+              <button class="primary-button" type="button" data-action="new-customer"><span aria-hidden="true">＋</span> Agregar cliente</button>
+            </div>
+
+            <div class="customer-summary" aria-label="Resumen de clientes">
+              <article><span>Clientes registrados</span><strong id="customer-total-count">0</strong></article>
+              <article><span>Con órdenes activas</span><strong id="customer-active-count">0</strong></article>
+              <article><span>Equipos atendidos</span><strong id="customer-equipment-count">0</strong></article>
+            </div>
+
+            <section class="panel full-panel">
+              <div class="panel-header order-list-header">
+                <div><span class="eyebrow">DIRECTORIO</span><h2>Clientes del taller</h2></div>
+                <span class="result-count" id="customer-result-count">0 clientes</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table customer-table">
+                  <thead><tr><th>Cliente</th><th>Contacto</th><th>Empresa / NIT</th><th>Equipos</th><th>Órdenes</th><th>Último servicio</th><th><span class="sr-only">Editar</span></th></tr></thead>
+                  <tbody id="customers-table-body"></tbody>
+                </table>
+              </div>
+              <div class="mobile-record-list" id="mobile-customers-list"></div>
+              <div class="empty-state" id="customers-empty" hidden>
+                <div class="empty-icon">◎</div>
+                <h3>Aún no hay clientes</h3>
+                <p>Registra el primer cliente para relacionar sus equipos y órdenes.</p>
+                <button class="secondary-button" data-action="new-customer">Agregar cliente</button>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="assets-view" data-view-panel="assets">
+            <div class="section-toolbar assets-toolbar">
+              <div class="section-intro">
+                <p>Los equipos se registran al crear una orden para conservar todo su historial de servicio.</p>
+              </div>
+              <button class="secondary-button" data-action="new-order"><span aria-hidden="true">＋</span> Recibir equipo</button>
+            </div>
+
+            <section class="panel full-panel">
+              <div class="panel-header order-list-header">
+                <div>
+                  <span class="eyebrow">HISTORIAL DE EQUIPOS</span>
+                  <h2>Equipos registrados</h2>
+                </div>
+                <span class="result-count" id="asset-result-count">0 equipos</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table asset-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Equipo</th>
+                      <th>Cliente</th>
+                      <th>Categoría</th>
+                      <th>Ubicación</th>
+                      <th>Estado</th>
+                      <th>Órdenes abiertas</th>
+                    </tr>
+                  </thead>
+                  <tbody id="assets-table-body"></tbody>
+                </table>
+              </div>
+              <div class="mobile-record-list" id="mobile-assets-list"></div>
+              <div class="empty-state" id="assets-empty" hidden>
+                <div class="empty-icon">⚙</div>
+                <h3>Aún no hay equipos</h3>
+                <p>Crea una orden de servicio para registrar el primer equipo recibido.</p>
+                <button class="secondary-button" data-action="new-order">Recibir equipo</button>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="inventory-view" data-view-panel="inventory">
+            <div class="section-toolbar inventory-toolbar">
+              <div class="section-intro">
+                <p>Controla repuestos, consumibles y accesorios disponibles para el servicio técnico.</p>
+              </div>
+              <div class="inventory-toolbar-actions">
+                <button class="secondary-button" type="button" data-action="new-purchase-report">Generar reporte de compras</button>
+                <button class="primary-button" type="button" data-action="new-inventory-item"><span aria-hidden="true">＋</span> Agregar producto</button>
+              </div>
+            </div>
+
+            <div class="inventory-summary" aria-label="Resumen de inventario">
+              <article><span>Productos registrados</span><strong id="inventory-reference-count">0</strong></article>
+              <article><span>Unidades disponibles</span><strong id="inventory-unit-count">0</strong></article>
+              <article class="inventory-alert-summary"><span>Requieren compra</span><strong id="inventory-low-count">0</strong></article>
+            </div>
+
+            <section class="panel full-panel">
+              <div class="panel-header inventory-list-header">
+                <div>
+                  <span class="eyebrow">REPUESTOS Y CONSUMIBLES</span>
+                  <h2>Existencias actuales</h2>
+                </div>
+                <div class="search-box inventory-search-box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 19.6-4.8-4.8a7.5 7.5 0 1 0-1.4 1.4l4.8 4.8 1.4-1.4ZM5 10.5a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z"/></svg>
+                  <input id="inventory-search" type="search" placeholder="Buscar producto, código o categoría..." autocomplete="off">
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table inventory-table">
+                  <thead>
+                    <tr>
+                      <th>Código</th>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Unidad</th>
+                      <th>Existencias</th>
+                      <th>Mínimo</th>
+                      <th>Estado</th>
+                      <th><span class="sr-only">Editar</span></th>
+                    </tr>
+                  </thead>
+                  <tbody id="inventory-table-body"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="inventory-empty" hidden>
+                <div class="empty-icon">□</div>
+                <h3>Aún no hay productos</h3>
+                <p>Agrega manualmente el primer repuesto, consumible o accesorio.</p>
+                <button class="secondary-button" data-action="new-inventory-item">Agregar producto</button>
+              </div>
+            </section>
+
+            <section class="panel full-panel purchase-history-panel">
+              <div class="panel-header order-list-header">
+                <div>
+                  <span class="eyebrow">HISTORIAL DE COMPRAS</span>
+                  <h2>Reportes generados</h2>
+                </div>
+                <span class="result-count" id="purchase-report-count">0 reportes</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead><tr><th>Reporte</th><th>Fecha</th><th>Proveedor</th><th>Recepción</th><th>Total</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+                  <tbody id="purchase-reports-table-body"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="purchase-reports-empty">
+                <div class="empty-icon">↧</div>
+                <h3>Aún no hay reportes</h3>
+                <p>Genera un reporte cuando necesites cotizar o reponer inventario.</p>
+              </div>
+            </section>
+
+            <section class="panel full-panel movement-history-panel">
+              <div class="panel-header order-list-header">
+                <div>
+                  <span class="eyebrow">KARDEX LOCAL</span>
+                  <h2>Movimientos de inventario</h2>
+                </div>
+                <span class="result-count" id="inventory-movement-count">0 movimientos</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table movement-table">
+                  <thead><tr><th>Fecha</th><th>Producto</th><th>Origen</th><th>Movimiento</th><th>Saldo</th><th>Referencia</th></tr></thead>
+                  <tbody id="inventory-movements-table-body"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="inventory-movements-empty">
+                <div class="empty-icon">↕</div>
+                <h3>Aún no hay movimientos</h3>
+                <p>Las entradas, consumos, ventas y ajustes aparecerán aquí.</p>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="sales-view" data-view-panel="sales">
+            <div class="section-toolbar sales-toolbar">
+              <div class="section-intro">
+                <p>Registra ventas de accesorios y productos que no formen parte de una orden de servicio.</p>
+              </div>
+              <button class="primary-button" type="button" data-action="new-sale"><span aria-hidden="true">＋</span> Nueva venta</button>
+            </div>
+
+            <div class="inventory-summary" aria-label="Resumen de ventas">
+              <article><span>Ventas registradas</span><strong id="sales-count">0</strong></article>
+              <article><span>Ventas vigentes</span><strong id="active-sales-count">0</strong></article>
+              <article><span>Total vendido</span><strong id="sales-total">Q0.00</strong></article>
+            </div>
+
+            <section class="panel full-panel">
+              <div class="panel-header order-list-header">
+                <div><span class="eyebrow">VENTAS DIRECTAS</span><h2>Historial de ventas</h2></div>
+                <span class="result-count" id="sales-result-count">0 ventas</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table sales-table">
+                  <thead><tr><th>Venta</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+                  <tbody id="sales-table-body"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="sales-empty">
+                <div class="empty-icon">¤</div>
+                <h3>Aún no hay ventas directas</h3>
+                <p>Cuando vendas un accesorio, regístralo aquí para descontarlo del inventario.</p>
+                <button class="secondary-button" data-action="new-sale">Registrar venta</button>
+              </div>
+            </section>
+          </section>
+
+          <section class="view" id="statistics-view" data-view-panel="statistics">
+            <div class="section-toolbar statistics-toolbar">
+              <div class="section-intro"><p>Indicadores del taller calculados directamente con los datos locales.</p></div>
+              <label class="field compact-select"><span>Periodo</span>
+                <select id="statistics-range">
+                  <option value="30">&Uacute;ltimos 30 d&iacute;as</option>
+                  <option value="90" selected>&Uacute;ltimos 90 d&iacute;as</option>
+                  <option value="365">&Uacute;ltimo a&ntilde;o</option>
+                  <option value="0">Todo el historial</option>
+                </select>
+              </label>
+            </div>
+            <div class="statistics-metrics" id="statistics-metrics"></div>
+            <div class="statistics-grid">
+              <section class="panel statistics-panel">
+                <div class="panel-header"><div><span class="eyebrow">TENDENCIA</span><h2>Actividad mensual</h2></div></div>
+                <div class="monthly-chart" id="monthly-chart"></div>
+              </section>
+              <section class="panel statistics-panel">
+                <div class="panel-header"><div><span class="eyebrow">OPERACI&Oacute;N</span><h2>&Oacute;rdenes por estado</h2></div></div>
+                <div class="status-stat-list" id="statistics-statuses"></div>
+              </section>
+              <section class="panel statistics-panel statistics-wide">
+                <div class="panel-header"><div><span class="eyebrow">EQUIPO T&Eacute;CNICO</span><h2>Mano de obra registrada</h2></div></div>
+                <div class="table-wrap"><table class="data-table"><thead><tr><th>T&eacute;cnico</th><th>Trabajos</th><th>Horas</th><th>Total</th></tr></thead><tbody id="technician-statistics"></tbody></table></div>
+                <div class="empty-state compact-empty" id="technician-statistics-empty"><p>A&uacute;n no hay mano de obra registrada en este periodo.</p></div>
+              </section>
+            </div>
+          </section>
+
+          <section class="view" id="users-view" data-view-panel="users" data-admin-only>
+            <div class="section-toolbar">
+              <div class="section-intro"><p>Administra el acceso local y consulta la actividad de las cuentas.</p></div>
+              <button class="primary-button" type="button" data-action="new-user"><span aria-hidden="true">+</span> Nuevo usuario</button>
+            </div>
+            <div class="users-grid">
+              <section class="panel">
+                <div class="panel-header"><div><span class="eyebrow">ACCESO</span><h2>Cuentas del taller</h2></div><span class="result-count" id="users-count">0 usuarios</span></div>
+                <div class="table-wrap"><table class="data-table"><thead><tr><th>Usuario</th><th>Perfil</th><th>&Uacute;ltimo acceso</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead><tbody id="users-table-body"></tbody></table></div>
+              </section>
+              <section class="panel">
+                <div class="panel-header"><div><span class="eyebrow">AUDITOR&Iacute;A</span><h2>Actividad reciente</h2></div></div>
+                <ul class="activity-list" id="user-activity-list"></ul>
+              </section>
+            </div>
+            <section class="panel sync-settings-panel">
+              <div class="panel-header">
+                <div><span class="eyebrow">DATOS COMPARTIDOS</span><h2>Sincronización con PostgreSQL</h2></div>
+                <span class="sync-state-pill" id="sync-state-pill">Sin configurar</span>
+              </div>
+              <form id="sync-settings-form" class="sync-settings-form" novalidate>
+                <label class="field sync-server-field"><span>Dirección HTTPS del servidor <b>*</b></span><input name="serverUrl" type="url" placeholder="https://sync.tudominio.com" required><small>Es la dirección pública de la API; no uses el puerto 5432 de PostgreSQL.</small></label>
+                <label class="field"><span>ID del dispositivo <b>*</b></span><input name="deviceId" autocomplete="off" required></label>
+                <label class="field"><span>Prefijo <b>*</b></span><input name="devicePrefix" maxlength="8" placeholder="PC01" autocomplete="off" required></label>
+                <label class="field sync-token-field"><span>Token del dispositivo <b>*</b></span><input name="token" type="password" autocomplete="new-password" placeholder="Pega el token generado en el servidor"><small id="sync-token-help">El token queda en el almacenamiento privado de esta instalación.</small></label>
+                <div class="sync-settings-actions">
+                  <div class="sync-settings-summary"><strong id="sync-pending-count">0 cambios pendientes</strong><small id="sync-last-copy">Aún no se ha sincronizado</small></div>
+                  <button class="secondary-button" type="button" data-action="sync-now">Sincronizar ahora</button>
+                  <button class="primary-button" type="submit">Verificar y guardar</button>
+                </div>
+              </form>
+            </section>
+          </section>
+
+          <section class="view" id="backups-view" data-view-panel="backups">
+            <div class="section-toolbar backup-toolbar">
+              <div class="section-intro">
+                <p>Protege todos los datos del taller con copias SQLite restaurables y verificadas.</p>
+              </div>
+              <div class="backup-toolbar-actions">
+                <button class="secondary-button" type="button" data-action="refresh-backups">Actualizar lista</button>
+                <button class="secondary-button" type="button" data-action="export-backup">Exportar JSON</button>
+                <button class="primary-button" type="button" data-action="create-manual-backup"><span aria-hidden="true">＋</span> Crear respaldo ahora</button>
+              </div>
+            </div>
+
+            <div class="backup-summary" aria-label="Estado de respaldos">
+              <article class="backup-summary-primary">
+                <span>Respaldo automático</span>
+                <strong id="backup-automatic-status">Activo</strong>
+                <small id="backup-policy">Una copia diaria</small>
+              </article>
+              <article>
+                <span>Copias restaurables</span>
+                <strong id="backup-count">0</strong>
+                <small>Guardadas localmente</small>
+              </article>
+              <article>
+                <span>Última copia válida</span>
+                <strong id="backup-last-date">Sin copias</strong>
+                <small id="backup-last-kind">—</small>
+              </article>
+            </div>
+
+            <section class="panel backup-panel">
+              <div class="panel-header backup-panel-header">
+                <div>
+                  <span class="eyebrow">RECUPERACIÓN LOCAL</span>
+                  <h2>Copias disponibles</h2>
+                </div>
+                <span class="result-count" id="backup-result-count">0 respaldos</span>
+              </div>
+              <div class="backup-directory-row">
+                <span>Carpeta de almacenamiento</span>
+                <strong id="backup-directory">Cargando…</strong>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table backup-table">
+                  <thead><tr><th>Fecha</th><th>Tipo</th><th>Contenido</th><th>Tamaño</th><th>Estado</th><th><span class="sr-only">Acciones</span></th></tr></thead>
+                  <tbody id="backup-table-body"></tbody>
+                </table>
+              </div>
+              <div class="empty-state" id="backups-empty">
+                <div class="empty-icon">↺</div>
+                <h3>Aún no hay copias restaurables</h3>
+                <p>Crea una copia manual; además, Geecko generará una automáticamente cada día que uses la aplicación.</p>
+              </div>
+            </section>
+
+            <aside class="restore-notice">
+              <span>!</span>
+              <div><strong>Restauración protegida</strong><p>Antes de restaurar una copia, Geecko valida su integridad y guarda automáticamente una copia de emergencia de los datos actuales.</p></div>
+            </aside>
+          </section>
+        </main>
+      </div>
+
+      <nav class="mobile-bottom-nav" aria-label="Navegación móvil">
+        <button type="button" class="mobile-nav-item is-active" data-view="dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h6V4H4v9Zm0 7h6v-4H4v4Zm10 0h6v-9h-6v9Zm0-16v4h6V4h-6Z"/></svg>
+          <span>Inicio</span>
+        </button>
+        <button type="button" class="mobile-nav-item" data-view="orders">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v2h3a1 1 0 0 1 1 1v15H3V6a1 1 0 0 1 1-1h3V3Zm2 2h6V4H9v1Zm-4 2v12h14V7h-2v2H7V7H5Zm3 5h8v2H8v-2Zm0 4h5v2H8v-2Z"/></svg>
+          <span>Órdenes</span>
+        </button>
+        <button type="button" class="mobile-nav-create" data-action="new-order" aria-label="Crear nueva orden">
+          <span aria-hidden="true">＋</span>
+        </button>
+        <button type="button" class="mobile-nav-item" data-view="customers">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 8a7 7 0 0 1 14 0H5Z"/></svg>
+          <span>Clientes</span>
+        </button>
+        <button type="button" class="mobile-nav-item" data-view="assets">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.7 6.3 3-3a7 7 0 0 0-8.9 8.9l-5.5 5.5a2.1 2.1 0 0 0 3 3l5.5-5.5a7 7 0 0 0 8.9-8.9l-4.1 4.1-3-3 1.1-1.1Z"/></svg>
+          <span>Equipos</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <div class="drawer-layer" id="order-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer" aria-labelledby="new-order-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow" id="order-form-eyebrow">RECEPCIÓN DE EQUIPO</span>
+            <h2 id="new-order-title">Nueva orden de servicio</h2>
+            <p id="order-form-subtitle">Registra el equipo, sus accesorios y el trabajo solicitado en un solo paso.</p>
+          </div>
+          <button class="icon-button" data-action="close-order-drawer" aria-label="Cerrar">×</button>
+        </div>
+        <form id="order-form" class="drawer-form" novalidate>
+          <input type="hidden" name="orderId">
+          <div class="form-section">
+            <h3>Servicio solicitado</h3>
+            <label class="field field-wide">
+              <span>Motivo de ingreso <b>*</b></span>
+              <input name="title" maxlength="120" required placeholder="Ej. Portátil no enciende">
+              <small class="field-error" data-error-for="title"></small>
+            </label>
+            <label class="field field-wide">
+              <span>Falla reportada o servicio requerido <b>*</b></span>
+              <textarea name="description" rows="4" maxlength="4000" required placeholder="Describe los síntomas, cuándo ocurre la falla y qué solicita el cliente..."></textarea>
+              <small class="field-error" data-error-for="description"></small>
+            </label>
+            <div class="field-row">
+              <label class="field">
+                <span>Tipo</span>
+                <select name="type">
+                  <option value="correctivo">Reparación correctiva</option>
+                  <option value="preventivo">Mantenimiento preventivo</option>
+                  <option value="inspeccion">Diagnóstico</option>
+                  <option value="mejora">Actualización o mejora</option>
+                  <option value="garantia" hidden>Regreso por garantía</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Prioridad</span>
+                <select name="priority">
+                  <option value="media">Media</option>
+                  <option value="critica">Urgente</option>
+                  <option value="alta">Alta</option>
+                  <option value="baja">Baja</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Equipo recibido</h3>
+            <div class="asset-mode field-wide" role="radiogroup" aria-label="Origen del equipo">
+              <label class="mode-choice is-selected">
+                <input type="radio" name="assetMode" value="new" checked>
+                <span><strong>Equipo nuevo</strong><small>Registrar su ficha al crear la orden</small></span>
+              </label>
+              <label class="mode-choice">
+                <input type="radio" name="assetMode" value="existing">
+                <span><strong>Ya registrado</strong><small>Usar un equipo que regresó al taller</small></span>
+              </label>
+            </div>
+            <div class="conditional-fields field-wide" id="incoming-asset-fields">
+              <div class="field-row">
+                <label class="field">
+                  <span>Tipo de equipo <b>*</b></span>
+                  <select name="assetCategory">
+                    <option value="">Seleccionar…</option>
+                    <option value="Portátil">Portátil / Laptop</option>
+                    <option value="Computadora de escritorio">Computadora de escritorio</option>
+                    <option value="Todo en uno">Todo en uno</option>
+                    <option value="Mini PC">Mini PC</option>
+                    <option value="Estación de trabajo">Estación de trabajo</option>
+                    <option value="Servidor">Servidor</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                  <small class="field-error" data-error-for="assetCategory"></small>
+                </label>
+                <label class="field">
+                  <span>Identificación del equipo <b>*</b></span>
+                  <input name="assetName" maxlength="120" placeholder="Ej. Laptop Dell de Carlos">
+                  <small class="field-error" data-error-for="assetName"></small>
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span>Marca</span>
+                  <input name="assetManufacturer" maxlength="100" placeholder="Dell, HP, Lenovo…">
+                </label>
+                <label class="field">
+                  <span>Modelo</span>
+                  <input name="assetModel" maxlength="100" placeholder="Latitude 5420">
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span>Número de serie</span>
+                  <input name="assetSerialNumber" maxlength="100">
+                </label>
+                <label class="field">
+                  <span>Código interno <em>opcional</em></span>
+                  <input name="assetCode" maxlength="40" placeholder="Se genera automáticamente">
+                  <small class="field-error" data-error-for="assetCode"></small>
+                </label>
+              </div>
+            </div>
+            <div class="conditional-fields field-wide" id="existing-asset-fields" hidden>
+              <label class="field field-wide">
+                <span>Seleccionar equipo registrado <b>*</b></span>
+                <select name="assetId" id="order-asset-select">
+                  <option value="">Seleccionar equipo…</option>
+                </select>
+                <small class="field-error" data-error-for="assetId"></small>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Cliente</h3>
+            <div class="customer-mode asset-mode field-wide" role="radiogroup" aria-label="Origen del cliente">
+              <label class="mode-choice is-selected">
+                <input type="radio" name="customerMode" value="new" checked>
+                <span><strong>Cliente nuevo</strong><small>Crear su ficha con esta orden</small></span>
+              </label>
+              <label class="mode-choice">
+                <input type="radio" name="customerMode" value="existing">
+                <span><strong>Cliente registrado</strong><small>Usar su información guardada</small></span>
+              </label>
+            </div>
+            <div class="conditional-fields field-wide" id="incoming-customer-fields">
+              <div class="field-row">
+                <label class="field">
+                  <span>Nombre completo <b>*</b></span>
+                  <input name="customerName" maxlength="120" placeholder="Nombre del cliente">
+                  <small class="field-error" data-error-for="customerName"></small>
+                </label>
+                <label class="field">
+                  <span>Teléfono</span>
+                  <input name="customerPhone" maxlength="40" placeholder="Teléfono o WhatsApp">
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span>Correo electrónico</span>
+                  <input name="customerEmail" type="email" maxlength="160" placeholder="cliente@correo.com">
+                  <small class="field-error" data-error-for="customerEmail"></small>
+                </label>
+                <label class="field">
+                  <span>Empresa</span>
+                  <input name="customerCompany" maxlength="120" placeholder="Opcional">
+                </label>
+              </div>
+              <div class="field-row">
+                <label class="field">
+                  <span>Dirección</span>
+                  <input name="customerAddress" maxlength="240" placeholder="Dirección o referencia">
+                </label>
+                <label class="field">
+                  <span>NIT <em>opcional</em></span>
+                  <input name="customerTaxId" maxlength="30">
+                </label>
+              </div>
+            </div>
+            <div class="conditional-fields field-wide" id="existing-customer-fields" hidden>
+              <label class="field field-wide">
+                <span>Seleccionar cliente <b>*</b></span>
+                <select name="customerId" id="order-customer-select"><option value="">Seleccionar cliente…</option></select>
+                <small class="field-error" data-error-for="customerId"></small>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Seguimiento</h3>
+            <div class="field-row">
+              <label class="field">
+                <span>Empresa, sede o referencia</span>
+                <input name="location" maxlength="160" placeholder="Ubicación relacionada con el servicio">
+              </label>
+              <label class="field">
+                <span>Técnico responsable</span>
+                <input name="assignedTo" maxlength="120" placeholder="Nombre del técnico">
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>Fecha prevista</span>
+                <input name="scheduledDate" type="date">
+                <small class="field-error" data-error-for="scheduledDate"></small>
+              </label>
+              <label class="field">
+                <span>Horas estimadas</span>
+                <input name="estimatedHours" type="number" min="0" max="10000" step="0.25" placeholder="2.5">
+                <small class="field-error" data-error-for="estimatedHours"></small>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h3>Accesorios recibidos</h3>
+            <p class="section-help field-wide">Marca únicamente lo que el cliente entrega junto con el equipo.</p>
+            <div class="accessory-grid field-wide">
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Cargador / adaptador"><span>Cargador / adaptador</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Cable de alimentación"><span>Cable de alimentación</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Mouse"><span>Mouse</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Teclado"><span>Teclado</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Mochila / estuche"><span>Mochila / estuche</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Receptor USB"><span>Receptor USB</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Cable de video"><span>Cable HDMI / DP / VGA</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Disco o memoria externa"><span>Disco / memoria externa</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Base o enfriador"><span>Base / enfriador</span></label>
+              <label class="check-chip"><input type="checkbox" name="accessories" value="Lápiz óptico"><span>Lápiz óptico</span></label>
+            </div>
+            <label class="field field-wide">
+              <span>Otros accesorios <em>uno por línea</em></span>
+              <textarea name="otherAccessories" rows="2" maxlength="1000" placeholder="Adaptador USB-C&#10;Funda protectora"></textarea>
+            </label>
+          </div>
+
+          <div class="form-section">
+            <h3>Trabajo y notas de recepción</h3>
+            <label class="field field-wide">
+              <span>Lista de tareas <em>una por línea</em></span>
+              <textarea name="tasks" rows="4" placeholder="Realizar diagnóstico inicial&#10;Limpiar sistema de refrigeración&#10;Ejecutar pruebas finales"></textarea>
+            </label>
+            <label class="field field-wide">
+              <span>Notas técnicas</span>
+              <textarea name="safetyNotes" rows="3" maxlength="2000" placeholder="Datos importantes para el diagnóstico o la reparación..."></textarea>
+            </label>
+            <label class="field field-wide">
+              <span>Observaciones de recepción</span>
+              <textarea name="observations" rows="4" maxlength="4000" placeholder="Estado físico, golpes, piezas faltantes, daños visibles o cualquier detalle no contemplado arriba..."></textarea>
+            </label>
+          </div>
+
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-order-drawer">Cancelar</button>
+            <button type="submit" class="primary-button submit-button" id="order-submit-button">Crear orden</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="customer-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer drawer-small" aria-labelledby="customer-form-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">DIRECTORIO DE CLIENTES</span>
+            <h2 id="customer-form-title">Agregar cliente</h2>
+            <p>Guarda sus datos para reutilizarlos en próximas reparaciones.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-customer-drawer" aria-label="Cerrar">×</button>
+        </div>
+        <form id="customer-form" class="drawer-form" novalidate>
+          <input type="hidden" name="id">
+          <div class="form-section">
+            <label class="field field-wide">
+              <span>Nombre completo <b>*</b></span>
+              <input name="name" maxlength="120" required placeholder="Nombre del cliente">
+              <small class="field-error" data-error-for="name"></small>
+            </label>
+            <div class="field-row">
+              <label class="field"><span>Teléfono</span><input name="phone" maxlength="40" placeholder="Teléfono o WhatsApp"></label>
+              <label class="field">
+                <span>Correo electrónico</span><input name="email" type="email" maxlength="160" placeholder="cliente@correo.com">
+                <small class="field-error" data-error-for="email"></small>
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field"><span>Empresa</span><input name="company" maxlength="120"></label>
+              <label class="field"><span>NIT <em>opcional</em></span><input name="taxId" maxlength="30"></label>
+            </div>
+            <label class="field field-wide"><span>Dirección</span><input name="address" maxlength="240" placeholder="Dirección o referencia"></label>
+            <label class="field field-wide"><span>Notas del cliente</span><textarea name="notes" rows="4" maxlength="2000" placeholder="Preferencias de contacto, referencias u observaciones internas..."></textarea></label>
+          </div>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-customer-drawer">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar cliente</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="inventory-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer inventory-drawer" aria-labelledby="inventory-form-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">INVENTARIO LOCAL</span>
+            <h2 id="inventory-form-title">Agregar producto</h2>
+            <p id="inventory-form-subtitle">Registra las existencias actuales y el nivel que activa una compra.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-inventory-drawer" aria-label="Cerrar">×</button>
+        </div>
+        <form id="inventory-form" class="drawer-form" novalidate>
+          <input type="hidden" name="id">
+          <div class="form-section">
+            <div class="field-row">
+              <label class="field">
+                <span>Producto <b>*</b></span>
+                <input name="name" maxlength="140" required placeholder="Ej. SSD NVMe 1 TB">
+                <small class="field-error" data-error-for="name"></small>
+              </label>
+              <label class="field">
+                <span>Código interno <em>opcional</em></span>
+                <input name="code" maxlength="40" placeholder="Se genera automáticamente">
+                <small class="field-error" data-error-for="code"></small>
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>Categoría</span>
+                <input name="category" maxlength="80" placeholder="Almacenamiento, cables, limpieza...">
+              </label>
+              <label class="field">
+                <span>Unidad de control</span>
+                <select name="unit">
+                  <option value="unidad">Unidad</option>
+                  <option value="pieza">Pieza</option>
+                  <option value="caja">Caja</option>
+                  <option value="paquete">Paquete</option>
+                  <option value="metro">Metro</option>
+                  <option value="litro">Litro</option>
+                </select>
+              </label>
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>Existencias actuales <b>*</b></span>
+                <input name="quantity" type="number" min="0" step="1" value="0" required>
+                <small class="field-error" data-error-for="quantity"></small>
+              </label>
+              <label class="field">
+                <span>Nivel mínimo</span>
+                <input name="minimumStock" type="number" min="0" step="1" value="0">
+                <small class="field-error" data-error-for="minimumStock"></small>
+              </label>
+            </div>
+            <p class="section-help field-wide">Cuando las existencias sean iguales o menores al mínimo, el producto aparecerá como pendiente de compra.</p>
+          </div>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-inventory-drawer">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar producto</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="purchase-report-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer purchase-report-drawer" aria-labelledby="purchase-report-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">REPOSICIÓN DE INVENTARIO</span>
+            <h2 id="purchase-report-title">Reporte de compras</h2>
+            <p>Selecciona lo que se comprará e indica cantidad y costo unitario.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-purchase-report" aria-label="Cerrar">×</button>
+        </div>
+        <form id="purchase-report-form" class="drawer-form" novalidate>
+          <div class="form-section report-general-fields">
+            <label class="field field-wide">
+              <span>Proveedor o referencia <em>opcional</em></span>
+              <input name="supplier" maxlength="160" placeholder="Nombre del proveedor o cotización">
+            </label>
+            <label class="field field-wide">
+              <span>Notas de compra</span>
+              <textarea name="notes" rows="2" maxlength="2000" placeholder="Condiciones, prioridad o cualquier indicación adicional..."></textarea>
+            </label>
+          </div>
+          <div class="purchase-products-section">
+            <div class="purchase-column-headings" aria-hidden="true">
+              <span>Producto y existencia</span><span>Cantidad</span><span>Costo unitario</span><span>Subtotal</span>
+            </div>
+            <div id="purchase-report-lines" class="purchase-report-lines"></div>
+            <small class="field-error purchase-lines-error" data-error-for="lines"></small>
+          </div>
+          <div class="purchase-report-total">
+            <span>Total estimado</span>
+            <strong id="purchase-report-total">Q0.00</strong>
+          </div>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-purchase-report">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar e imprimir</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="purchase-receipt-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer purchase-report-drawer" aria-labelledby="purchase-receipt-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">ENTRADA DE INVENTARIO</span>
+            <h2 id="purchase-receipt-title">Recibir compra</h2>
+            <p id="purchase-receipt-subtitle">Registra únicamente las unidades que llegaron.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-purchase-receipt" aria-label="Cerrar">×</button>
+        </div>
+        <form id="purchase-receipt-form" class="drawer-form" novalidate>
+          <input type="hidden" name="reportId">
+          <section class="quote-order-summary" id="purchase-receipt-summary"></section>
+          <div class="purchase-products-section">
+            <div class="purchase-column-headings receipt-column-headings" aria-hidden="true">
+              <span>Producto y pendiente</span><span>Recibir</span><span>Costo unitario</span><span>Subtotal</span>
+            </div>
+            <div id="purchase-receipt-lines" class="purchase-report-lines"></div>
+            <small class="field-error purchase-lines-error" data-error-for="lines"></small>
+          </div>
+          <div class="form-section">
+            <label class="field field-wide">
+              <span>Notas de recepción</span>
+              <textarea name="notes" rows="3" maxlength="2000" placeholder="Número de factura del proveedor, faltantes, daños u observaciones..."></textarea>
+            </label>
+          </div>
+          <div class="purchase-report-total"><span>Total recibido</span><strong id="purchase-receipt-total">Q0.00</strong></div>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-purchase-receipt">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Registrar entrada</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="sale-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer sale-drawer" aria-labelledby="sale-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">VENTA SIN ORDEN DE SERVICIO</span>
+            <h2 id="sale-title">Nueva venta directa</h2>
+            <p>Los productos se descontarán del inventario al guardar.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-sale" aria-label="Cerrar">×</button>
+        </div>
+        <form id="sale-form" class="drawer-form" novalidate>
+          <div class="form-section">
+            <label class="field field-wide">
+              <span>Cliente <em>opcional</em></span>
+              <input name="customerName" maxlength="160" placeholder="Nombre del comprador">
+            </label>
+            <label class="field field-wide">
+              <span>Notas</span>
+              <textarea name="notes" rows="2" maxlength="2000" placeholder="Forma de pago, garantía u observaciones internas..."></textarea>
+            </label>
+          </div>
+          <section class="form-section resource-editor-section">
+            <div class="section-title-row field-wide">
+              <div><h3>Productos vendidos</h3><p>Sólo se muestran productos con existencias disponibles.</p></div>
+              <button type="button" class="secondary-button compact-button" data-action="add-sale-line">+ Agregar producto</button>
+            </div>
+            <div class="resource-part-head field-wide" aria-hidden="true">
+              <span>Producto</span><span>Cantidad</span><span>Precio unitario</span><span>Subtotal</span><span></span>
+            </div>
+            <div id="sale-lines" class="resource-lines field-wide"></div>
+            <small class="field-error field-wide" data-error-for="lines"></small>
+          </section>
+          <section class="quote-totals-section">
+            <label class="field quote-discount-field">
+              <span>Descuento (Q)</span>
+              <input type="number" name="discount" min="0" step="0.01" value="0">
+              <small class="field-error" data-error-for="discount"></small>
+            </label>
+            <div class="quote-totals">
+              <div><span>Subtotal</span><strong id="sale-subtotal">Q0.00</strong></div>
+              <div><span>Descuento</span><strong id="sale-discount">− Q0.00</strong></div>
+              <div class="quote-grand-total"><span>Total</span><strong id="sale-total">Q0.00</strong></div>
+            </div>
+          </section>
+          <p class="sale-tax-note">Se generará un comprobante interno. No constituye factura fiscal ni FEL.</p>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-sale">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar e imprimir</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="resources-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer resources-drawer" aria-labelledby="resources-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">CONSUMO DE LA ORDEN</span>
+            <h2 id="resources-title">Repuestos y mano de obra</h2>
+            <p>Registra lo utilizado realmente. Los repuestos descontarán existencias del inventario.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-resources" aria-label="Cerrar">×</button>
+        </div>
+        <form id="resources-form" class="drawer-form" novalidate>
+          <input type="hidden" name="orderId">
+          <section class="quote-order-summary" id="resources-order-summary"></section>
+
+          <section class="form-section resource-editor-section">
+            <div class="section-title-row field-wide">
+              <div><h3>Repuestos utilizados</h3><p>La cantidad se descuenta al guardar y se devuelve si luego corriges la orden.</p></div>
+              <button type="button" class="secondary-button compact-button" data-action="add-order-part">+ Agregar repuesto</button>
+            </div>
+            <div class="resource-part-head field-wide" aria-hidden="true">
+              <span>Producto de inventario</span><span>Cantidad</span><span>Precio unitario</span><span>Subtotal</span><span></span>
+            </div>
+            <div id="order-parts" class="resource-lines field-wide"></div>
+            <p class="resource-empty-note field-wide" id="parts-inventory-empty" hidden>El inventario está vacío. Agrega productos en la sección Inventario antes de registrar repuestos.</p>
+            <small class="field-error field-wide" data-error-for="parts"></small>
+          </section>
+
+          <section class="form-section resource-editor-section">
+            <div class="section-title-row field-wide">
+              <div><h3>Mano de obra realizada</h3><p>Registra las horas reales empleadas y la tarifa aplicada.</p></div>
+              <button type="button" class="secondary-button compact-button" data-action="add-order-labor">+ Agregar trabajo</button>
+            </div>
+            <div class="resource-labor-head field-wide" aria-hidden="true">
+              <span>Técnico y actividad</span><span>Horas</span><span>Tarifa / hora</span><span>Subtotal</span><span></span>
+            </div>
+            <div id="order-labor" class="resource-lines field-wide"></div>
+            <small class="field-error field-wide" data-error-for="labor"></small>
+          </section>
+
+          <section class="resource-totals-section">
+            <div><span>Total repuestos</span><strong id="resource-parts-total">Q0.00</strong></div>
+            <div><span>Total mano de obra</span><strong id="resource-labor-total">Q0.00</strong></div>
+            <div class="resource-grand-total"><span>Total registrado</span><strong id="resources-total">Q0.00</strong></div>
+          </section>
+
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-resources">Cerrar</button>
+            <button type="submit" class="primary-button resources-save-button">Guardar consumos</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="payment-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer payment-drawer" aria-labelledby="payment-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">COBRO DE ORDEN</span>
+            <h2 id="payment-title">Registrar anticipo o pago</h2>
+            <p>El recibo quedará asociado permanentemente a la orden.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-payment" aria-label="Cerrar">×</button>
+        </div>
+        <form id="payment-form" class="drawer-form" novalidate>
+          <input type="hidden" name="orderId">
+          <section class="payment-order-summary" id="payment-order-summary"></section>
+          <section class="form-section payment-form-section">
+            <div class="field-row">
+              <label class="field">
+                <span>Tipo de cobro <b>*</b></span>
+                <select name="paymentType" required>
+                  <option value="advance">Anticipo</option>
+                  <option value="payment">Pago</option>
+                </select>
+                <small class="field-error" data-error-for="paymentType"></small>
+              </label>
+              <label class="field">
+                <span>Monto (Q) <b>*</b></span>
+                <input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" required placeholder="0.00">
+                <small class="field-error" data-error-for="amount"></small>
+              </label>
+            </div>
+            <p class="payment-balance-help field-wide" id="payment-balance-help"></p>
+            <div class="field-row">
+              <label class="field">
+                <span>Forma de pago <b>*</b></span>
+                <select name="method" required>
+                  <option value="cash">Efectivo</option>
+                  <option value="card">Tarjeta</option>
+                  <option value="transfer">Transferencia</option>
+                  <option value="deposit">Depósito bancario</option>
+                  <option value="other">Otro</option>
+                </select>
+                <small class="field-error" data-error-for="method"></small>
+              </label>
+              <label class="field">
+                <span>Referencia <em>opcional</em></span>
+                <input name="reference" maxlength="160" placeholder="Autorización, operación o boleta">
+              </label>
+            </div>
+            <label class="field field-wide">
+              <span>Recibido por <b>*</b></span>
+              <input name="receivedBy" maxlength="160" required placeholder="Nombre de quien recibe el dinero">
+              <small class="field-error" data-error-for="receivedBy"></small>
+            </label>
+            <label class="field field-wide">
+              <span>Nota</span>
+              <textarea name="note" rows="3" maxlength="1000" placeholder="Detalle o condición relacionada con el pago..."></textarea>
+            </label>
+          </section>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-payment">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar e imprimir recibo</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="warranty-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer warranty-drawer" aria-labelledby="warranty-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">COBERTURA DEL SERVICIO</span>
+            <h2 id="warranty-title">Definir garantía</h2>
+            <p>Registra la vigencia y las condiciones aplicables al trabajo entregado.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-warranty" aria-label="Cerrar">×</button>
+        </div>
+        <form id="warranty-form" class="drawer-form" novalidate>
+          <input type="hidden" name="orderId">
+          <section class="quote-order-summary" id="warranty-order-summary"></section>
+          <section class="form-section">
+            <div class="field-row">
+              <label class="field">
+                <span>Inicio de garantía <b>*</b></span>
+                <input name="startsAt" type="date" required>
+                <small class="field-error" data-error-for="startsAt"></small>
+              </label>
+              <label class="field">
+                <span>Vigencia en días <b>*</b></span>
+                <input name="durationDays" type="number" min="1" max="3650" step="1" value="90" required>
+                <small class="field-error" data-error-for="durationDays"></small>
+              </label>
+            </div>
+            <label class="field field-wide">
+              <span>Cobertura <b>*</b></span>
+              <textarea name="coverage" rows="5" maxlength="4000" placeholder="Trabajos realizados y repuestos cuya falla estará cubierta..."></textarea>
+              <small class="field-error" data-error-for="coverage"></small>
+            </label>
+            <label class="field field-wide">
+              <span>Exclusiones</span>
+              <textarea name="exclusions" rows="4" maxlength="4000" placeholder="Golpes, humedad, manipulación de terceros, fallas distintas a la reparación..."></textarea>
+            </label>
+          </section>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-warranty">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Guardar garantía</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="warranty-return-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer warranty-return-drawer" aria-labelledby="warranty-return-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">REINGRESO DE EQUIPO</span>
+            <h2 id="warranty-return-title">Orden de regreso por garantía</h2>
+            <p>Se reutilizarán el cliente y el equipo de la orden original.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-warranty-return" aria-label="Cerrar">×</button>
+        </div>
+        <form id="warranty-return-form" class="drawer-form" novalidate>
+          <input type="hidden" name="originalOrderId">
+          <section class="quote-order-summary" id="warranty-return-summary"></section>
+          <section class="form-section">
+            <label class="field field-wide">
+              <span>Falla reportada al regresar <b>*</b></span>
+              <textarea name="reportedIssue" rows="5" maxlength="4000" required placeholder="Describe qué volvió a fallar, cuándo ocurrió y en qué condiciones..."></textarea>
+              <small class="field-error" data-error-for="reportedIssue"></small>
+            </label>
+            <label class="field field-wide">
+              <span>Condición física al reingresar</span>
+              <textarea name="receivedCondition" rows="3" maxlength="4000" placeholder="Golpes, humedad, tornillos faltantes, estado de sellos u observaciones..."></textarea>
+            </label>
+            <label class="field">
+              <span>Prioridad</span>
+              <select name="priority">
+                <option value="alta">Alta</option>
+                <option value="media" selected>Media</option>
+                <option value="baja">Baja</option>
+                <option value="critica">Urgente</option>
+              </select>
+            </label>
+          </section>
+          <section class="form-section">
+            <h3>Accesorios recibidos nuevamente</h3>
+            <div class="accessory-grid field-wide">
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Cargador / adaptador"><span>Cargador / adaptador</span></label>
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Cable de alimentación"><span>Cable de alimentación</span></label>
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Mouse"><span>Mouse</span></label>
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Teclado"><span>Teclado</span></label>
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Mochila / estuche"><span>Mochila / estuche</span></label>
+              <label class="check-chip"><input type="checkbox" name="returnAccessories" value="Receptor USB"><span>Receptor USB</span></label>
+            </div>
+            <label class="field field-wide">
+              <span>Otros accesorios</span>
+              <textarea name="otherReturnAccessories" rows="2" maxlength="1000" placeholder="Uno por línea"></textarea>
+            </label>
+          </section>
+          <div class="drawer-footer">
+            <button type="button" class="ghost-button" data-action="close-warranty-return">Cancelar</button>
+            <button type="submit" class="primary-button submit-button">Crear orden e imprimir recepción</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="quote-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer quote-drawer" aria-labelledby="quote-title">
+        <div class="drawer-header">
+          <div>
+            <span class="eyebrow">DIAGNÓSTICO Y COTIZACIÓN</span>
+            <h2 id="quote-title">Preparar cotización</h2>
+            <p id="quote-subtitle">Documenta el hallazgo técnico y los conceptos que deberá autorizar el cliente.</p>
+          </div>
+          <button class="icon-button" type="button" data-action="close-quote" aria-label="Cerrar">×</button>
+        </div>
+        <form id="quote-form" class="drawer-form" novalidate>
+          <input type="hidden" name="orderId">
+          <section class="quote-order-summary" id="quote-order-summary"></section>
+
+          <section class="form-section quote-diagnosis-section">
+            <h3>Resultado de la revisión</h3>
+            <label class="field field-wide">
+              <span>Diagnóstico técnico <b>*</b></span>
+              <textarea name="diagnosis" rows="5" maxlength="6000" placeholder="Describe las pruebas realizadas, la causa encontrada y el estado del equipo..."></textarea>
+              <small class="field-error" data-error-for="diagnosis"></small>
+            </label>
+            <label class="field field-wide">
+              <span>Recomendación</span>
+              <textarea name="recommendation" rows="3" maxlength="4000" placeholder="Indica la reparación propuesta, piezas necesarias o alternativas para el cliente..."></textarea>
+            </label>
+          </section>
+
+          <section class="form-section quote-items-section">
+            <div class="section-title-row field-wide">
+              <div><h3>Conceptos de la cotización</h3><p>Agrega mano de obra, repuestos u otros cargos.</p></div>
+              <button type="button" class="secondary-button compact-button" data-action="add-quote-item">+ Agregar concepto</button>
+            </div>
+            <div class="quote-line-head field-wide" aria-hidden="true">
+              <span>Tipo y descripción</span><span>Cant.</span><span>Precio</span><span>Subtotal</span><span></span>
+            </div>
+            <div id="quote-items" class="quote-items field-wide"></div>
+            <small class="field-error quote-items-error" data-error-for="items"></small>
+          </section>
+
+          <section class="quote-totals-section">
+            <label class="field quote-discount-field">
+              <span>Descuento (Q)</span>
+              <input type="number" name="discount" min="0" step="0.01" value="0">
+              <small class="field-error" data-error-for="discount"></small>
+            </label>
+            <div class="quote-totals">
+              <div><span>Subtotal</span><strong id="quote-subtotal">Q0.00</strong></div>
+              <div><span>Descuento</span><strong id="quote-discount-total">− Q0.00</strong></div>
+              <div class="quote-grand-total"><span>Total a autorizar</span><strong id="quote-total">Q0.00</strong></div>
+            </div>
+          </section>
+
+          <section class="quote-authorization-section" id="quote-authorization-section">
+            <div class="section-title-row">
+              <div><h3>Decisión del cliente</h3><p id="quote-authorization-help">Registra quién comunicó la decisión y por qué medio.</p></div>
+              <span class="quote-status-pill" id="quote-status-pill">Borrador</span>
+            </div>
+            <div class="field-row">
+              <label class="field">
+                <span>Decisión comunicada por</span>
+                <input name="authorizedBy" maxlength="160" placeholder="Nombre del cliente o responsable">
+                <small class="field-error" data-error-for="authorizedBy"></small>
+              </label>
+              <label class="field">
+                <span>Medio de autorización</span>
+                <select name="method">
+                  <option value="">Seleccionar…</option>
+                  <option value="firma">Firma en cotización</option>
+                  <option value="presencial">Confirmación presencial</option>
+                  <option value="telefono">Llamada telefónica</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="correo">Correo electrónico</option>
+                </select>
+                <small class="field-error" data-error-for="method"></small>
+              </label>
+            </div>
+            <label class="field field-wide">
+              <span>Nota de autorización o rechazo</span>
+              <textarea name="authorizationNote" rows="2" maxlength="2000" placeholder="Número de conversación, condiciones aceptadas, motivo del rechazo u otra referencia..."></textarea>
+            </label>
+            <div class="quote-decision-actions">
+              <button type="button" class="secondary-button" data-action="revise-quote">Retirar y editar</button>
+              <button type="button" class="danger-button" data-action="reject-quote">Registrar rechazo</button>
+              <button type="button" class="primary-button" data-action="approve-quote">Registrar aprobación</button>
+            </div>
+          </section>
+
+          <div class="drawer-footer quote-footer">
+            <button type="button" class="ghost-button" data-action="close-quote">Cerrar</button>
+            <button type="button" class="secondary-button" data-action="print-quote">Imprimir cotización</button>
+            <button type="submit" class="secondary-button quote-save-button">Guardar borrador</button>
+            <button type="button" class="primary-button" data-action="request-quote-authorization">Solicitar autorización</button>
+          </div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="user-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer user-drawer" aria-labelledby="user-drawer-title">
+        <div class="drawer-header">
+          <div><span class="eyebrow">CUENTA LOCAL</span><h2 id="user-drawer-title">Nuevo usuario</h2><p>Asigna s&oacute;lo los permisos necesarios para su trabajo.</p></div>
+          <button class="icon-button" type="button" data-action="close-user" aria-label="Cerrar">&times;</button>
+        </div>
+        <form id="user-form" class="drawer-form" novalidate>
+          <section class="form-section">
+            <label class="field field-wide"><span>Nombre completo <b>*</b></span><input name="displayName" maxlength="100" required><small class="field-error" data-error-for="displayName"></small></label>
+            <label class="field field-wide"><span>Usuario <b>*</b></span><input name="username" maxlength="40" autocomplete="off" required><small class="field-error" data-error-for="username"></small></label>
+            <label class="field field-wide"><span>Perfil <b>*</b></span>
+              <select name="role"><option value="reception">Recepci&oacute;n</option><option value="technician">T&eacute;cnico</option><option value="admin">Administrador</option></select>
+            </label>
+            <div class="role-help field-wide"><strong>Recepci&oacute;n</strong> registra clientes, &oacute;rdenes, cobros, compras y ventas. <strong>T&eacute;cnico</strong> gestiona diagn&oacute;sticos, reparaciones, garant&iacute;as y fotos. <strong>Administrador</strong> tiene acceso completo.</div>
+            <label class="field field-wide"><span>Contrase&ntilde;a temporal <b>*</b></span><input name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><small class="field-error" data-error-for="password"></small></label>
+          </section>
+          <div class="drawer-footer"><button class="ghost-button" type="button" data-action="close-user">Cancelar</button><button class="primary-button submit-button" type="submit">Crear usuario</button></div>
+        </form>
+      </aside>
+    </div>
+
+    <div class="drawer-layer" id="detail-drawer-layer" hidden>
+      <div class="drawer-backdrop" aria-hidden="true"></div>
+      <aside class="drawer detail-drawer" aria-labelledby="detail-title">
+        <div id="detail-content"></div>
+      </aside>
+    </div>
+
+    <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+    <div id="print-root" aria-hidden="true"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

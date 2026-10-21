@@ -1,0 +1,27 @@
+{
+  "name": "geecko-maintenance",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Aplicación de escritorio local y offline para gestionar órdenes de mantenimiento.",
+  "scripts": {
+    "start": "tauri dev",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "preandroid:dev": "adb reverse tcp:1430 tcp:1430",
+    "android:dev": "tauri android dev --host 127.0.0.1 --port 1430",
+    "android:dev:wifi": "tauri android dev --port 1430 --force-ip-prompt",
+    "android:build": "tauri android build --apk --target aarch64",
+    "sync:server": "cargo run --manifest-path sync-server/Cargo.toml --bin geecko-sync-server",
+    "sync:device": "cargo run --manifest-path sync-server/Cargo.toml --bin geecko-sync-admin --",
+    "tauri": "tauri",
+    "test": "node --check public/app.js && node --test tests/*.test.js && cargo test --manifest-path src-tauri/Cargo.toml && cargo test --manifest-path sync-protocol/Cargo.toml && cargo test --manifest-path sync-server/Cargo.toml"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.0"
+  },
+  "license": "UNLICENSED"
+}

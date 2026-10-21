@@ -1,0 +1,22 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Geecko Móvil",
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Geecko Móvil",
+        "theme": "Dark",
+        "backgroundColor": "#09100d",
+        "fullscreen": false,
+        "resizable": true,
+        "generalAutofillEnabled": false
+      }
+    ]
+  },
+  "bundle": {
+    "android": {
+      "minSdkVersion": 24
+    }
+  }
+}

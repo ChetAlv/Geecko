@@ -1,0 +1,14 @@
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.sqlite
+node_modules/
+src-tauri/target/
+sync-protocol/target/
+sync-server/target/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
